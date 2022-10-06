@@ -1,0 +1,1909 @@
+openapi: 3.0.0
+info:
+  description: CSX Restful api.
+  version: 1.0.0
+  title: CSX Backend
+  termsOfService: https://www.tochieinfotech.com/
+  contact:
+    email: hr@tochieinfotech.com
+tags:
+  - name: User
+    description: Register the new user
+  - name: Scrip
+    description: Scrip CURD operations
+  - name: Industry
+    description: Industry CURD operations
+  - name: ScripBidding
+    description: ScripBidding CURD and other operations
+paths:
+  /user:
+    post:
+      tags:
+        - User
+      summary: Register user
+      description: New user need to register the app by using this
+      operationId: Register
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - userType
+                - firstName
+                - lastName
+                - mobileNo
+                - email
+                - password
+              properties:
+                userType:
+                  type: string
+                  enum:
+                    - INDUSTRY
+                    - AGENT
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                mobileNo:
+                  type: integer
+                  format: int32
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/verifyOtp:
+    post:
+      tags:
+        - User
+      summary: Vefify user
+      description: Registered user need to verified by using this
+      operationId: Verification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - otp
+              properties:
+                email:
+                  type: string
+                otp:
+                  type: number
+      responses:
+        '200':
+          description: User verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/login:
+    post:
+      tags:
+        - User
+      summary: Login user
+      description: Register user need to login the app by using this
+      operationId: Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          description: User login successfuly
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userType:
+                    type: string
+                    enum:
+                      - INDUSTRY
+                      - AGENT
+                  status:
+                    type: string
+                    enum:
+                      - ACTIVE
+                      - INACTIVE
+                  firstName:
+                    type: string
+                    description: The user first name.
+                  lastName:
+                    type: string
+                    description: The user last name.
+                  mobileNo:
+                    type: number
+                    description: The user mobile No .
+                  token:
+                    type: string
+                  tokenExpiringAt:
+                    type: number
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/logout:
+    post:
+      tags:
+        - User
+      summary: Logout user
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: User logout successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/{email}:
+    get:
+      tags:
+        - User
+      summary: Get user
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: user get by email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User get successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/profile:
+    put:
+      tags:
+        - User
+      summary: Update user profile
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - firstName
+                - lastName
+                - mobileNo
+                - email
+                - address
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                mobileNo:
+                  type: number
+                email:
+                  type: string
+                address:
+                  type: object
+                  properties:
+                    street1:
+                      type: string
+                    street2:
+                      type: string
+                    city:
+                      type: string
+                    state:
+                      type: string
+                    country:
+                      type: string
+                    zipcode:
+                      type: number
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/changePassword:
+    put:
+      tags:
+        - User
+      summary: change password
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - oldPassword
+                - newPassword
+              properties:
+                oldPassword:
+                  type: string
+                newPassword:
+                  type: string
+      responses:
+        '200':
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/forgotPassword/{email}:
+    get:
+      tags:
+        - User
+      summary: forgot password
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: Password reset link sent
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Password reset link Sent successfully to email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/resetPassword:
+    post:
+      tags:
+        - User
+      summary: reset password
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - newPassword
+                - otp
+              properties:
+                email:
+                  type: string
+                newPassword:
+                  type: string
+                otp:
+                  type: number
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/uploadKYC/{typeOfKYC}:
+    put:
+      tags:
+        - User
+      summary: Upload KYC doc
+      description: Upload KYC doc
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: typeOfKYC
+          in: path
+          required: true
+          description: Upload KYC doc
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: KYC uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/removeDoc/{typeOfDoc}:
+    delete:
+      tags:
+        - User
+      summary: Remove DOC
+      description: Remove Doc
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: typeOfDoc
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /user/KYC:
+    get:
+      tags:
+        - User
+      summary: Get KYC details
+      description: get KYC
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: get KYC datails successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+    put:
+      tags:
+        - User
+      summary: update KYC details
+      description: update KYC
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - aadhar
+                - pancard
+                - gstin
+                - voterid
+              properties:
+                aadhar:
+                  type: number
+                pancard:
+                  type: string
+                gstin:
+                  type: string
+                voterid:
+                  type: string
+      responses:
+        '200':
+          description: User KYC updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/checkCinAvailable/{cin}:
+    get:
+      tags:
+        - Industry
+      summary: Check industry with cin number
+      description: industry will be check by cin number
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: cin
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Industry checked successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry:
+    post:
+      tags:
+        - Industry
+      summary: create a new industry
+      description: new industry will be created
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/industry'
+      responses:
+        '200':
+          description: Industry created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+    get:
+      tags:
+        - Industry
+      summary: get industry by industryName and email
+      description: list of industry
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: industryName
+          in: query
+          description: industryName to be searched.
+          schema:
+            type: string
+        - name: email
+          in: query
+          description: email to be searched.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: get industry
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/verifyOtp:
+    post:
+      tags:
+        - Industry
+      summary: Verify industry by otp
+      description: Registered industry need to verified by otp
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - industryId
+                - token
+              properties:
+                industryId:
+                  type: string
+                token:
+                  type: number
+      responses:
+        '200':
+          description: Industry verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/resendOtp:
+    post:
+      tags:
+        - Industry
+      summary: resend verification otp to email
+      description: resend verification otp
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - industryId
+              properties:
+                industryId:
+                  type: string
+      responses:
+        '200':
+          description: otp resend successfully to email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/verifyKyc/{industryId}:
+    put:
+      tags:
+        - Industry
+      summary: verifyKyc of industry
+      description: verifyKyc of industry
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - isKYC
+                - comments
+              properties:
+                isKYC:
+                  type: boolean
+                  enum:
+                    - true
+                    - false
+                comments:
+                  type: string
+      parameters:
+        - name: industryId
+          in: path
+          required: true
+          description: verifyKyc of industry with industryId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: industry verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/{email}:
+    get:
+      tags:
+        - Industry
+      summary: get industry by email
+      description: get industry
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: email
+          in: path
+          required: true
+          description: get industry with email
+          schema:
+            type: string
+      responses:
+        '200':
+          description: get industry successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/{industryId}:
+    delete:
+      tags:
+        - Industry
+      summary: delete industry by industryId
+      description: delete industry
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: industryId
+          in: path
+          required: true
+          description: delete industry with industryId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: otp resend successfully to email
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+    put:
+      tags:
+        - Industry
+      summary: update industry by industryId
+      description: update industry
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: industryId
+          in: path
+          required: true
+          description: update industry with industryId
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/industry'
+      responses:
+        '200':
+          description: industry updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+    get:
+      tags:
+        - Industry
+      summary: Get industry by industryId
+      description: Get industry
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: industryId
+          in: path
+          required: true
+          description: get industry with industryId
+          schema:
+            type: string
+      responses:
+        '200':
+          description: industry get successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/getAllByUserId:
+    get:
+      tags:
+        - Industry
+      summary: Get  all industries
+      description: Get industry
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: industries get successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/getAllKycVerifiedByUserId:
+    get:
+      tags:
+        - Industry
+      summary: Get All KycVerified By UserId
+      description: Get industry
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: industry get successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/uploadIndustryDoc/{typeOfDOC}:
+    put:
+      tags:
+        - Industry
+      summary: Upload Industry doc
+      description: Upload Industry doc
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: typeOfDOC
+          in: path
+          required: true
+          description: Upload Industry doc
+          schema:
+            type: string
+        - name: industryId
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: industryDOC uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/getIndustryDoc/{industryId}:
+    get:
+      tags:
+        - Industry
+      summary: Get Industry DOC
+      description: get Industry DOC
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: industryId
+          in: path
+          required: true
+          description: Get Industry doc
+          schema:
+            type: string
+      responses:
+        '200':
+          description: get KYC datails successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /industry/removeIndustryDoc/{typeOfDoc}:
+    delete:
+      tags:
+        - Industry
+      summary: Remove DOC
+      description: Remove Doc
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: typeOfDoc
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: industryId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /scrip/create:
+    post:
+      tags:
+        - Scrip
+      summary: create new list
+      description: New list will be created under a specific company
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/scrip'
+      responses:
+        '200':
+          description: Scrip created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /scrip/uploadScripDoc/{typeOfDOC}:
+    put:
+      tags:
+        - Scrip
+      summary: Upload Scrip doc
+      description: Upload Scrip doc
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: typeOfDOC
+          in: path
+          required: true
+          description: Upload Scrip doc
+          schema:
+            type: string
+        - name: scripId
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                fileName:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: scripDOC uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /scrip/getScripDoc/{scripId}:
+    get:
+      tags:
+        - Scrip
+      summary: Get Scrip DOC
+      description: get Scrip DOC
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: scripId
+          in: path
+          required: true
+          description: Get Scrip doc
+          schema:
+            type: string
+      responses:
+        '200':
+          description: get Scrip DOC successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /scrip/removeScripDoc/{typeOfDoc}:
+    delete:
+      tags:
+        - Scrip
+      summary: Remove DOC
+      description: Remove Doc
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: typeOfDoc
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: scripId
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Document deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /scrip/{scripNo}:
+    put:
+      tags:
+        - Scrip
+      summary: Update a scrip by ScripNo
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: scripNo
+          in: path
+          required: true
+          description: Scrip number to be searched.
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/scrip'
+      responses:
+        '200':
+          description: Scrip updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+    get:
+      tags:
+        - Scrip
+      summary: Get a scrip by ScripNo
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: scripNo
+          in: path
+          required: true
+          description: Scrip number to be searched.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: A single scrip
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+    delete:
+      tags:
+        - Scrip
+      summary: Delete a scrip by ScripNo
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: scripNo
+          in: path
+          required: true
+          description: Scrip number to be deleted.
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Scrip deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /scrip/:
+    get:
+      tags:
+        - Scrip
+      summary: Get all Active scrips
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: A list of all the scrips created by the user.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/scrip'
+  /scrip/comments:
+    get:
+      tags:
+        - Scrip
+      summary: Get all comments
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: scripCounter
+          in: query
+          required: true
+          description: Scrip Counter to be searched.
+          schema:
+            type: integer
+        - name: scripId
+          in: query
+          required: true
+          description: Scrip Id to be searched.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Get All Scrips Comment.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/scrip'
+  /scrip/{scripId}:
+    put:
+      tags:
+        - Scrip
+      summary: scrip mark sold
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: scripId
+          in: path
+          required: true
+          description: Scrip Id to be searched.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Scrip sold successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /port:
+    get:
+      tags:
+        - port
+      summary: get port
+      description: get port by portCode, portOfRegistration and portId
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: portCode
+          in: query
+          description: port code to be searched.
+          schema:
+            type: string
+        - name: portOfRegistration
+          in: query
+          description: portOfRegistration to be searched.
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: status to be searched.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Port get successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /port/ports:
+    get:
+      tags:
+        - port
+      summary: get ports
+      description: get all ports
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: Get all ports successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /scrip/bidding:
+    post:
+      tags:
+        - ScripBidding
+      summary: create Bid for a scrip
+      description: Bidding for a specific Scrip will be created
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/bidding'
+      responses:
+        '200':
+          description: Bid Placed Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /scrip/bidding/{biddingId}:
+    delete:
+      tags:
+        - ScripBidding
+      summary: Withdrawal Bid for a scrip
+      description: Withdrawal for a specific Scrip will be Done
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: biddingId
+          in: path
+          required: true
+          description: Bidding Id to be searched.
+          schema:
+            type: string
+        - name: scripCounter
+          in: query
+          required: true
+          description: scripCounter to be searched.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Bid WITHDRAWN Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /scrip/bidding/{scripCounter}:
+    get:
+      tags:
+        - ScripBidding
+      summary: Get all bidding on specific Scrip
+      description: Get bidding for a specific Scrip will be Done
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: scripCounter
+          in: path
+          required: true
+          description: scripCounter to be searched.
+          schema:
+            type: string
+        - name: isActive
+          in: query
+          schema:
+            type: boolean
+        - name: scripCounter
+          in: query
+          schema:
+            type: number
+        - name: industryId
+          in: query
+          schema:
+            type: string
+        - name: bidAmount
+          in: query
+          schema:
+            type: number
+        - name: percentageOfBidAmount
+          in: query
+          schema:
+            type: number
+        - name: userId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum:
+              - BID PLACED
+              - APPROVED
+              - REJECTED
+              - WITHDRAWN
+              - NEGOTIATION
+        - name: bidId
+          in: query
+          schema:
+            type: string
+        - name: bidNumber
+          in: query
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Bidding get Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /scrip/bidding/{bidId}:
+    put:
+      tags:
+        - ScripBidding
+      summary: APPROVED and REJECTED biddings on specific Scrip
+      description: APPROVED and REJECTED biddings on specific Scrip
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: bidId
+          in: path
+          required: true
+          description: bidId to be searched.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - status
+              properties:
+                status:
+                  type: string
+                  enum:
+                    - APPROVED
+                    - REJECTED
+                    - NEGOTIATION
+      responses:
+        '200':
+          description: Status changed Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /common/getState:
+    get:
+      tags:
+        - Common
+      summary: get states
+      description: get states
+      responses:
+        '200':
+          description: States get Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /common/getCity/{stateName}:
+    get:
+      tags:
+        - Common
+      summary: get cities
+      description: get cities by state name
+      parameters:
+        - name: stateName
+          in: path
+          required: true
+          description: State name to be searched.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cities get Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+  /common/getCities/{code}:
+    get:
+      tags:
+        - Common
+      summary: get cities
+      description: get cities by state code
+      parameters:
+        - name: code
+          in: path
+          required: true
+          description: State code to be searched.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cities get Successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/response'
+components:
+  schemas:
+    scrip:
+      properties:
+        companyName:
+          type: string
+        iec:
+          type: string
+        scripType:
+          type: string
+          enum:
+            - RODTEP
+            - SEIS
+            - MEIS
+        scripCounter:
+          type: integer
+        scripId:
+          type: string
+        scripNo:
+          type: integer
+        fobValue:
+          type: integer
+        dutyCredit:
+          type: integer
+        fileNumber:
+          type: string
+        vaildityOfAuthorization/dueDate:
+          type: string
+        customerNotificationNumber:
+          type: string
+        customerNotificationDate:
+          type: string
+        expectedAmount:
+          type: number
+        comments:
+          properties:
+            commentId:
+              type: string
+            comment:
+              type: string
+        exporterType:
+          type: string
+          enum:
+            - ABC
+            - XYZ
+        exporterStatus:
+          type: string
+          enum:
+            - ACTIVE
+            - INACTIVE
+        seis/meisDocumentURL:
+          type: string
+        digitalSignatureURL:
+          type: string
+        forTransactionToIndemnifyExchangeForAnyLoss:
+          type: boolean
+        isActive:
+          type: boolean
+    industry:
+      properties:
+        industryType:
+          type: string
+          enum:
+            - COMPANY
+            - PERSON
+            - FIRM
+            - AOP
+            - BOI
+            - TRUST
+        industryName:
+          type: string
+        iecNumber:
+          type: string
+        cin:
+          type: string
+        email:
+          type: string
+        mobileNo:
+          type: number
+        exporterType:
+          type: string
+          enum:
+            - MERCHANT EXPORTER
+            - MANUFACTURER EXPORTER
+            - SERVICE PROVIDER
+            - OTHERS
+            - MERCHANT/MANUFACTURER
+            - NONE
+        streetAddress:
+          type: string
+        city:
+          type: string
+        state:
+          type: string
+        pinCode:
+          type: number
+        industryPAN:
+          type: string
+        gstin:
+          type: string
+        indemnifyFlag:
+          type: boolean
+    bidding:
+      properties:
+        industryId:
+          type: string
+        scripNumber:
+          type: number
+        bidAmount:
+          type: number
+        percentageOfBidAmount:
+          type: number
+    response:
+      properties:
+        status:
+          type: string
+        code:
+          type: number
+        message:
+          type: string
+        data:
+          type: object
+  securitySchemes:
+    ApiKeyAuth: # arbitrary name for the security scheme
+      type: apiKey
+      in: header # can be "header", "query" or "cookie"
+      name: Authorization
