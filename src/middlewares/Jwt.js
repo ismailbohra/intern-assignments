@@ -31,6 +31,10 @@ const verifyToken = async (req, resp, next) => {
     if (!value) {
       return resp.status(401).json({
         message: 'Unauthorized',
+      });}
+    if(token.replace('Bearer ', '')!=value){
+      return resp.status(401).json({
+        message: 'Unauthorized',
       });
     }
     // const temp = value.split('++');
