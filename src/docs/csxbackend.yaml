@@ -11,52 +11,44 @@ paths:
       summary: get log
       description: get list of logs
       parameters:
-        - level: code
-          in: path
-          required: true
-          description: State code to be searched.
+        - name: level
+          in: query
+          description: level to be searched.
           schema:
             type: string
-        - message: code
-          in: path
-          required: true
-          description: State code to be searched.
+        - name: message
+          in: query
+          description: message to be searched.
           schema:
             type: string
-        - resourceId: code
-          in: path
-          required: true
-          description: State code to be searched.
+        - name: resourceId
+          in: query
+          description: resourceId to be searched.
           schema:
             type: string
-        - timestamp: code
-          in: path
-          required: true
-          description: State code to be searched.
+        - name: timestamp
+          in: query
+          description: timestamp to be searched.
           schema:
             type: string
-        - traceId: code
-          in: path
-          required: true
-          description: State code to be searched.
+        - name: traceId
+          in: query
+          description: traceId to be searched.
           schema:
             type: string
-        - spanId: code
-          in: path
-          required: true
-          description: State code to be searched.
+        - name: spanId
+          in: query
+          description: spanId to be searched.
           schema:
             type: string
-        - commit: code
-          in: path
-          required: true
-          description: State code to be searched.
+        - name: commit
+          in: query
+          description: commit to be searched.
           schema:
             type: string
-        - parentResourceId: code
-          in: path
-          required: true
-          description: State code to be searched.
+        - name: parentResourceId
+          in: query
+          description: parentResourceId to be searched.
           schema:
             type: string
       responses:
