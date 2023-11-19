@@ -27,14 +27,14 @@ const registerlog = async (userBody) => {
 const getlog = async (req) => {
   try {
     const filter = pick(req.query, ['level', 'message', 'resourceId', 'timestamp', 'traceId', 'spanId', 'commit']);
-    const options = pick(req.query, ['sortBy', 'limit', 'page']);
-    options.sort = '_md.createdDtm:-1';
+    // const options = pick(req.query, ['sortBy', 'limit', 'page']);
+    // options.sort = '_md.createdDtm:-1';
     if (req.query.parentResourceId) {
       filter.metadata = {};
       filter['metadata']['parentResourceId'] = new RegExp(req.query.parentResourceId, 'i');;
     }
     console.log(filter)
-    const user = await Log.paginate(filter, options);
+    const user = await Log.find(filter);
     if (!user) {
       throw new ApiError(httpStatus.NOT_FOUND, 'log Not Found');
     }
